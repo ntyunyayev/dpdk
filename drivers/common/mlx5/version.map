@@ -156,5 +156,6 @@ INTERNAL {
 
 	mlx5_os_interrupt_handler_create; # WINDOWS_NO_EXPORT
 	mlx5_os_interrupt_handler_destroy; # WINDOWS_NO_EXPORT
+	to_mlx5_device;
 	local: *;
 };

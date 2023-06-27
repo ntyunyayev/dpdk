@@ -180,6 +180,7 @@ static int
 mlx5_compress_qp_setup(struct rte_compressdev *dev, uint16_t qp_id,
 		       uint32_t max_inflight_ops, int socket_id)
 {
+	printf("inside qp setup\n");
 	struct mlx5_compress_priv *priv = dev->data->dev_private;
 	struct mlx5_compress_qp *qp;
 	struct mlx5_devx_cq_attr cq_attr = {

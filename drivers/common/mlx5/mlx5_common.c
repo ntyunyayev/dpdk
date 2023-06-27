@@ -442,7 +442,7 @@ mlx5_bus_match(const struct mlx5_class_driver *drv,
 	return true;
 }
 
-static struct mlx5_common_device *
+struct mlx5_common_device *
 to_mlx5_device(const struct rte_device *rte_dev)
 {
 	struct mlx5_common_device *cdev;
@@ -1084,12 +1084,12 @@ mlx5_common_dev_remove(struct rte_device *eal_dev)
  */
 int
 mlx5_common_dev_dma_map(struct rte_device *rte_dev, void *addr,
-			uint64_t iova __rte_unused, size_t len)
+			uint64_t iova, size_t len)
 {
 	struct mlx5_common_device *dev;
 	struct mlx5_mr_btree *bt;
 	struct mlx5_mr *mr;
-
+	struct mlx5_pmd_mr *pmd_mr = (struct mlx5_pmd_mr *)iova;
 	dev = to_mlx5_device(rte_dev);
 	if (!dev) {
 		DRV_LOG(WARNING,
@@ -1098,13 +1098,15 @@ mlx5_common_dev_dma_map(struct rte_device *rte_dev, void *addr,
 		rte_errno = ENODEV;
 		return -1;
 	}
-	mr = mlx5_create_mr_ext(dev->pd, (uintptr_t)addr, len,
+	mr = mlx5_create_mr_ext(dev->pd, pmd_mr->addr, pmd_mr->len,
 				SOCKET_ID_ANY, dev->mr_scache.reg_mr_cb);
 	if (!mr) {
 		DRV_LOG(WARNING, "Device %s unable to DMA map", rte_dev->name);
 		rte_errno = EINVAL;
 		return -1;
 	}
+	// mr->pmd_mr = *pmd_mr;
+
 try_insert:
 	rte_rwlock_write_lock(&dev->mr_scache.rwlock);
 	bt = &dev->mr_scache.cache;

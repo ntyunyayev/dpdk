@@ -156,6 +156,8 @@ int rte_pmd_mlx5_host_shaper_config(int port_id, uint8_t rate, uint32_t flags);
 __rte_experimental
 int rte_pmd_mlx5_external_sq_enable(uint16_t port_id, uint32_t sq_num);
 
+void mlx5_rxq_initializ(char *);
+
 #ifdef __cplusplus
 }
 #endif

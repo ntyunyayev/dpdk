@@ -570,6 +570,10 @@ __rte_internal
 void
 mlx5_devx_uar_release(struct mlx5_uar *uar);
 
+__rte_internal
+struct mlx5_common_device *
+to_mlx5_device(const struct rte_device *rte_dev);
+
 /* mlx5_common_os.c */
 
 int mlx5_os_open_device(struct mlx5_common_device *cdev, uint32_t classes);

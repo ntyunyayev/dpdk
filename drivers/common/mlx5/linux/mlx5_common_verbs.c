@@ -109,6 +109,7 @@ int
 mlx5_common_verbs_reg_mr(void *pd, void *addr, size_t length,
 			 struct mlx5_pmd_mr *pmd_mr)
 {
+	printf("inside reg_mr\n");
 	struct ibv_mr *ibv_mr;
 
 	ibv_mr = mlx5_glue->reg_mr(pd, addr, length,
@@ -117,7 +118,7 @@ mlx5_common_verbs_reg_mr(void *pd, void *addr, size_t length,
 				   IBV_ACCESS_RELAXED_ORDERING));
 	if (!ibv_mr)
 		return -1;
-
+	
 	*pmd_mr = (struct mlx5_pmd_mr){
 		.lkey = ibv_mr->lkey,
 		.addr = ibv_mr->addr,

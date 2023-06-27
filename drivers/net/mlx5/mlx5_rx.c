@@ -377,6 +377,7 @@ mlx5_rxq_initialize(struct mlx5_rxq_data *rxq)
 			byte_count = RTE_BIT32(rxq->log_strd_sz) *
 				     RTE_BIT32(rxq->log_strd_num);
 			lkey = mlx5_rx_addr2mr(rxq, addr);
+			//printf("lkey : %d\n",lkey);
 		} else {
 			struct rte_mbuf *buf = (*rxq->elts)[i];
 
@@ -385,6 +386,7 @@ mlx5_rxq_initialize(struct mlx5_rxq_data *rxq)
 			addr = rte_pktmbuf_mtod(buf, uintptr_t);
 			byte_count = DATA_LEN(buf);
 			lkey = mlx5_rx_mb2mr(rxq, buf);
+			//printf("lkey2 : %u\n",lkey);
 		}
 		/* scat->addr must be able to store a pointer. */
 		MLX5_ASSERT(sizeof(scat->addr) >= sizeof(uintptr_t));

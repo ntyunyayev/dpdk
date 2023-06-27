@@ -1492,7 +1492,6 @@ struct mlx5_ifc_cmd_hca_cap_bits {
 	u8 out_of_seq_cnt[0x1];
 	u8 vport_counters[0x1];
 	u8 retransmission_q_counters[0x1];
-	u8 debug[0x1];
 	u8 modify_rq_counter_set_id[0x1];
 	u8 rq_delay_drop[0x1];
 	u8 max_qp_cnt[0xa];

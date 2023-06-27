@@ -62,6 +62,7 @@ cflags_options = [
         '-D_BSD_SOURCE',
         '-D_DEFAULT_SOURCE',
         '-D_XOPEN_SOURCE=600',
+        '-DALLOW_EXPERIMENTAL'
 ]
 foreach option:cflags_options
     if cc.has_argument(option)
