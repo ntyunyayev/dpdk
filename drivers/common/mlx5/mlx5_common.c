@@ -442,7 +442,7 @@ mlx5_bus_match(const struct mlx5_class_driver *drv,
 	return true;
 }
 
-static struct mlx5_common_device *
+struct mlx5_common_device *
 to_mlx5_device(const struct rte_device *rte_dev)
 {
 	struct mlx5_common_device *cdev;
