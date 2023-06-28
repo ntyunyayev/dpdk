@@ -959,6 +959,7 @@ out:
 int
 rte_eal_init(int argc, char **argv)
 {
+	printf("inside eal\n");
 	int i, fctret, ret;
 	static uint32_t run_once;
 	uint32_t has_run = 0;

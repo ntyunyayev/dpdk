@@ -1089,7 +1089,9 @@ mlx5_common_dev_dma_map(struct rte_device *rte_dev, void *addr,
 	struct mlx5_common_device *dev;
 	struct mlx5_mr_btree *bt;
 	struct mlx5_mr *mr;
+
 	printf("inside dma\n");
+
 	struct mlx5_pmd_mr *pmd_mr = (struct mlx5_pmd_mr *)iova;
 	dev = to_mlx5_device(rte_dev);
 	if (!dev) {
@@ -1099,15 +1101,21 @@ mlx5_common_dev_dma_map(struct rte_device *rte_dev, void *addr,
 		rte_errno = ENODEV;
 		return -1;
 	}
-	mr = mlx5_create_mr_ext(dev->pd, pmd_mr->addr, pmd_mr->len,
+	/*Smart version */
+	// mr = mlx5_create_mr_ext(dev->pd, pmd_mr->addr, pmd_mr->len,
+	// 			SOCKET_ID_ANY, dev->mr_scache.reg_mr_cb);
+
+	mr = mlx5_create_mr_ext(dev->pd, (uintptr_t)addr, len,
 				SOCKET_ID_ANY, dev->mr_scache.reg_mr_cb);
 	if (!mr) {
 		DRV_LOG(WARNING, "Device %s unable to DMA map", rte_dev->name);
 		rte_errno = EINVAL;
 		return -1;
 	}
-	mr->pmd_mr = *pmd_mr;
-	
+	printf("replaced lkey\n");
+	mr->pmd_mr.lkey = pmd_mr->lkey;
+	printf("after create\n");
+
 try_insert:
 	rte_rwlock_write_lock(&dev->mr_scache.rwlock);
 	bt = &dev->mr_scache.cache;
@@ -1129,6 +1137,7 @@ try_insert:
 		 * allows another thread to execute step 3.
 		 */
 		rte_rwlock_write_unlock(&dev->mr_scache.rwlock);
+		
 		ret = mlx5_mr_expand_cache(&dev->mr_scache, size,
 					   rte_dev->numa_node);
 		if (ret < 0) {
@@ -1142,6 +1151,7 @@ try_insert:
 	/* Insert to the global cache table. */
 	mlx5_mr_insert_cache(&dev->mr_scache, mr);
 	rte_rwlock_write_unlock(&dev->mr_scache.rwlock);
+	printf("before return\n");
 	return 0;
 }
 
