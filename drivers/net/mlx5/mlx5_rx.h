@@ -358,6 +358,7 @@ mlx5_rx_addr2mr(struct mlx5_rxq_data *rxq, uintptr_t addr)
 static __rte_always_inline uint32_t
 mlx5_rx_mb2mr(struct mlx5_rxq_data *rxq, struct rte_mbuf *mb)
 {
+	printf("inside mlx5_rx_mb2mr\n");
 	struct mlx5_mr_ctrl *mr_ctrl = &rxq->mr_ctrl;
 	uintptr_t addr = (uintptr_t)mb->buf_addr;
 	uint32_t lkey;

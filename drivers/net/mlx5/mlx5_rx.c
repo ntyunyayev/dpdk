@@ -384,7 +384,8 @@ mlx5_rxq_initialize(struct mlx5_rxq_data *rxq)
 					rxq->wqes)[i];
 			addr = rte_pktmbuf_mtod(buf, uintptr_t);
 			byte_count = DATA_LEN(buf);
-			lkey = mlx5_rx_mb2mr(rxq, buf);
+			lkey = buf->dynfield1[0];
+			//printf("lkey : %d\n",lkey);
 		}
 		/* scat->addr must be able to store a pointer. */
 		MLX5_ASSERT(sizeof(scat->addr) >= sizeof(uintptr_t));

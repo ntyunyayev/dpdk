@@ -66,6 +66,7 @@ rte_bus_scan(void)
 int
 rte_bus_probe(void)
 {
+	printf("inside probe\n");
 	int ret;
 	struct rte_bus *bus, *vbus = NULL;
 
