@@ -262,7 +262,7 @@ rte_dev_probe(const char *devargs)
 
 	/* primary attach the new device itself. */
 	ret = local_dev_probe(devargs, &dev);
-
+	
 	if (ret != 0) {
 		RTE_LOG(ERR, EAL,
 			"Failed to attach device on primary process\n");

@@ -223,9 +223,11 @@ static int
 mlx5_aso_sq_create(struct mlx5_common_device *cdev, struct mlx5_aso_sq *sq,
 		   void *uar, uint16_t log_desc_n)
 {
+	printf("#===========inside mlx5_aso_sq_create==============\n");
 	struct mlx5_devx_cq_attr cq_attr = {
 		.uar_page_id = mlx5_os_get_devx_uar_page_id(uar),
 	};
+	printf("#cdev->pdn : %d\n", cdev->pdn);
 	struct mlx5_devx_create_sq_attr sq_attr = {
 		.user_index = 0xFFFF,
 		.wq_attr = (struct mlx5_devx_wq_attr){
@@ -240,17 +242,20 @@ mlx5_aso_sq_create(struct mlx5_common_device *cdev, struct mlx5_aso_sq *sq,
 	};
 	uint16_t log_wqbb_n;
 	int ret;
-
+	
 	if (mlx5_devx_cq_create(cdev->ctx, &sq->cq.cq_obj,
 				log_desc_n, &cq_attr,
 				SOCKET_ID_ANY))
 		goto error;
+	printf("#After cq\n");
 	sq->cq.cq_ci = 0;
 	sq->cq.log_desc_n = log_desc_n;
 	sq->log_desc_n = log_desc_n;
 	sq_attr.cqn = sq->cq.cq_obj.cq->id;
 	/* for mlx5_aso_wqe that is twice the size of mlx5_wqe */
 	log_wqbb_n = sq->log_desc_n + 1;
+	printf("#before sq\n");
+	/* Fails here */
 	ret = mlx5_devx_sq_create(cdev->ctx, &sq->sq_obj, log_wqbb_n, &sq_attr,
 				  SOCKET_ID_ANY);
 	if (ret) {
@@ -258,6 +263,7 @@ mlx5_aso_sq_create(struct mlx5_common_device *cdev, struct mlx5_aso_sq *sq,
 		rte_errno = ENOMEM;
 		goto error;
 	}
+	printf("#after sq\n");
 	ret = mlx5_devx_cmd_modify_sq(sq->sq_obj.sq, &modify_attr);
 	if (ret) {
 		DRV_LOG(ERR, "Can't change SQ state to ready.");
@@ -298,6 +304,7 @@ mlx5_aso_mtr_queue_init(struct mlx5_dev_ctx_shared *sh,
 				struct mlx5_aso_mtr_pools_mng *pool_mng,
 				uint32_t nb_queues)
 {
+	printf("#=============mlx5_aso_mtr_queue_init=======\n");
 	struct mlx5_common_device *cdev = sh->cdev;
 	struct mlx5_aso_sq *sq;
 	uint32_t i;
@@ -351,6 +358,7 @@ mlx5_aso_queue_init(struct mlx5_dev_ctx_shared *sh,
 		    enum mlx5_access_aso_opc_mod aso_opc_mod,
 			uint32_t nb_queues)
 {
+	printf("#inside mlx5_aso_queue_init\n");
 	uint32_t sq_desc_n = 1 << MLX5_ASO_QUEUE_LOG_DESC;
 	struct mlx5_common_device *cdev = sh->cdev;
 
@@ -1130,7 +1138,7 @@ mlx5_aso_ct_queue_init(struct mlx5_dev_ctx_shared *sh,
 		       uint32_t nb_queues)
 {
 	uint32_t i;
-
+	printf("#=============mlx5_aso_ct_queue_init=======\n");
 	/* 64B per object for query. */
 	for (i = 0; i < nb_queues; i++) {
 		if (mlx5_aso_reg_mr(sh->cdev, 64 * (1 << MLX5_ASO_QUEUE_LOG_DESC),
@@ -1773,7 +1781,7 @@ mlx5_aso_cnt_queue_init(struct mlx5_dev_ctx_shared *sh)
 	struct mlx5_hws_aso_mng *aso_mng = NULL;
 	uint8_t idx;
 	struct mlx5_aso_sq *sq;
-
+	printf("#=============mlx5_aso_cnt_queue_init=======\n");
 	MLX5_ASSERT(sh);
 	MLX5_ASSERT(sh->cnt_svc);
 	aso_mng = &sh->cnt_svc->aso_mng;

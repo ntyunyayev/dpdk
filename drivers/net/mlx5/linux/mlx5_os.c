@@ -1024,6 +1024,7 @@ mlx5_dev_spawn(struct rte_device *dpdk_dev,
 	       struct rte_eth_devargs *eth_da,
 	       struct mlx5_kvargs_ctrl *mkvlist)
 {
+	printf("inside device spawn\n");
 	const struct mlx5_switch_info *switch_info = &spawn->info;
 	struct mlx5_dev_ctx_shared *sh = NULL;
 	struct ibv_port_attr port_attr = { .state = IBV_PORT_NOP };
@@ -1544,6 +1545,7 @@ err_secondary:
 		err = ENODEV;
 		goto error;
 	}
+	
 	priv->drop_queue.hrxq = mlx5_drop_action_create(eth_dev);
 	if (!priv->drop_queue.hrxq)
 		goto error;

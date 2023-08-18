@@ -1302,6 +1302,7 @@ mlx5_devx_cmd_qp_query_tis_td(void *qp, uint32_t tis_num,
 static void
 devx_cmd_fill_wq_data(void *wq_ctx, struct mlx5_devx_wq_attr *wq_attr)
 {
+	printf("filling_wq_data\n");
 	MLX5_SET(wq, wq_ctx, wq_type, wq_attr->wq_type);
 	MLX5_SET(wq, wq_ctx, wq_signature, wq_attr->wq_signature);
 	MLX5_SET(wq, wq_ctx, end_padding_mode, wq_attr->end_padding_mode);
@@ -1353,6 +1354,7 @@ mlx5_devx_cmd_create_rq(void *ctx,
 			struct mlx5_devx_create_rq_attr *rq_attr,
 			int socket)
 {
+	printf("mlx5_devx_cmd_create_rq\n");
 	uint32_t in[MLX5_ST_SZ_DW(create_rq_in)] = {0};
 	uint32_t out[MLX5_ST_SZ_DW(create_rq_out)] = {0};
 	void *rq_ctx, *wq_ctx;
@@ -1764,6 +1766,7 @@ struct mlx5_devx_obj *
 mlx5_devx_cmd_create_sq(void *ctx,
 			struct mlx5_devx_create_sq_attr *sq_attr)
 {
+	printf("inside create sq\n");
 	uint32_t in[MLX5_ST_SZ_DW(create_sq_in)] = {0};
 	uint32_t out[MLX5_ST_SZ_DW(create_sq_out)] = {0};
 	void *sq_ctx;
@@ -1804,13 +1807,17 @@ mlx5_devx_cmd_create_sq(void *ctx,
 	wq_ctx = MLX5_ADDR_OF(sqc, sq_ctx, wq);
 	wq_attr = &sq_attr->wq_attr;
 	devx_cmd_fill_wq_data(wq_ctx, wq_attr);
+	printf("before calling glue\n");
 	sq->obj = mlx5_glue->devx_obj_create(ctx, in, sizeof(in),
 					     out, sizeof(out));
 	if (!sq->obj) {
 		DEVX_DRV_LOG(ERR, out, "create SQ", NULL, 0);
+		printf("before free\n");
 		mlx5_free(sq);
+		printf("after free \n");
 		return NULL;
 	}
+	printf("before create_sq_out\n");
 	sq->id = MLX5_GET(create_sq_out, out, sqn);
 	return sq;
 }

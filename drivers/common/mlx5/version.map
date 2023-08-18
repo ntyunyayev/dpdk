@@ -1,6 +1,8 @@
 INTERNAL {
 	global:
-
+	
+	to_mlx5_device;
+	
 	haswell_broadwell_cpu;
 
 	mlx5_auxiliary_get_child_name; # WINDOWS_NO_EXPORT
@@ -16,7 +18,7 @@ INTERNAL {
 	mlx5_dev_is_vf_pci;
 	mlx5_dev_mempool_unregister;
 	mlx5_dev_mempool_subscribe;
-
+	
 	mlx5_devx_cmd_alloc_pd;
 	mlx5_devx_cmd_create_conn_track_offload_obj;
 	mlx5_devx_cmd_create_cq;
@@ -156,5 +158,8 @@ INTERNAL {
 
 	mlx5_os_interrupt_handler_create; # WINDOWS_NO_EXPORT
 	mlx5_os_interrupt_handler_destroy; # WINDOWS_NO_EXPORT
+	
+	mlx5_pd_change;
+	mlx5_set_tmp_pd;
 	local: *;
 };

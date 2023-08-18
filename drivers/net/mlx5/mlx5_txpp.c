@@ -219,6 +219,7 @@ mlx5_txpp_fill_wqe_rearm_queue(struct mlx5_dev_ctx_shared *sh)
 static int
 mlx5_txpp_create_rearm_queue(struct mlx5_dev_ctx_shared *sh)
 {
+	printf("#================inside mlx5_txpp_create_rearm_queue\n============");
 	struct mlx5_devx_create_sq_attr sq_attr = {
 		.cd_master = 1,
 		.state = MLX5_SQC_STATE_RST,
@@ -383,6 +384,7 @@ wcopy:
 static int
 mlx5_txpp_create_clock_queue(struct mlx5_dev_ctx_shared *sh)
 {
+	printf("#================mlx5_txpp_create_clock_queue\n============");
 	struct mlx5_devx_create_sq_attr sq_attr = { 0 };
 	struct mlx5_devx_modify_sq_attr msq_attr = { 0 };
 	struct mlx5_devx_cq_attr cq_attr = {

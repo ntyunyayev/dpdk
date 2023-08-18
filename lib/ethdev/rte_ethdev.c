@@ -3303,6 +3303,11 @@ rte_eth_dev_fw_version_get(uint16_t port_id, char *fw_version, size_t fw_size)
 							fw_version, fw_size));
 }
 
+
+struct rte_eth_dev * rte_eth_dev_get_devices(void){
+	return rte_eth_devices;
+}
+
 int
 rte_eth_dev_info_get(uint16_t port_id, struct rte_eth_dev_info *dev_info)
 {

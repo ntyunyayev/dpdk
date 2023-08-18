@@ -1,6 +1,6 @@
 DPDK_23 {
 	global:
-
+	rte_eth_dev_get_devices;
 	rte_eth_add_first_rx_callback;
 	rte_eth_add_rx_callback;
 	rte_eth_add_tx_callback;

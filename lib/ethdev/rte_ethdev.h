@@ -6485,6 +6485,10 @@ rte_eth_tx_buffer(uint16_t port_id, uint16_t queue_id,
 __rte_experimental
 int rte_eth_buffer_split_get_supported_hdr_ptypes(uint16_t port_id, uint32_t *ptypes, int num);
 
+/* Custom function to retrieve the devices */
+struct rte_eth_dev * rte_eth_dev_get_devices(void);
+
+
 #ifdef __cplusplus
 }
 #endif

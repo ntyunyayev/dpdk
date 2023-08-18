@@ -442,7 +442,7 @@ mlx5_bus_match(const struct mlx5_class_driver *drv,
 	return true;
 }
 
-static struct mlx5_common_device *
+struct mlx5_common_device *
 to_mlx5_device(const struct rte_device *rte_dev)
 {
 	struct mlx5_common_device *cdev;
@@ -959,98 +959,97 @@ probe_err:
 int
 mlx5_common_dev_probe(struct rte_device *eal_dev)
 {
-// 	printf("probing\n");
-// 	struct mlx5_common_device *cdev;
-// 	struct mlx5_kvargs_ctrl mkvlist;
-// 	struct mlx5_kvargs_ctrl *mkvlist_p = NULL;
-// 	uint32_t classes = 0;
-// 	bool new_device = false;
-// 	int ret;
+	printf("probing\n");
+	struct mlx5_common_device *cdev;
+	struct mlx5_kvargs_ctrl mkvlist;
+	struct mlx5_kvargs_ctrl *mkvlist_p = NULL;
+	uint32_t classes = 0;
+	bool new_device = false;
+	int ret;
 
-// 	DRV_LOG(INFO, "probe device \"%s\".", eal_dev->name);
-// 	if (eal_dev->devargs != NULL && eal_dev->devargs->args != NULL)
-// 		mkvlist_p = &mkvlist;
-// 	ret = mlx5_kvargs_prepare(mkvlist_p, eal_dev->devargs);
-// 	if (ret < 0) {
-// 		DRV_LOG(ERR, "Unsupported device arguments: %s",
-// 			eal_dev->devargs->args);
-// 		return ret;
-// 	}
-// 	ret = parse_class_options(eal_dev->devargs, mkvlist_p);
-// 	if (ret < 0) {
-// 		DRV_LOG(ERR, "Unsupported mlx5 class type: %s",
-// 			eal_dev->devargs->args);
-// 		goto class_err;
-// 	}
-// 	classes = ret;
-// 	if (classes == 0)
-// 		/* Default to net class. */
-// 		classes = MLX5_CLASS_ETH;
-// 	/*
-// 	 * MLX5 common driver supports probing again in two scenarios:
-// 	 * - Add new driver under existing common device (regardless of the
-// 	 *   driver's own support in probing again).
-// 	 * - Transfer the probing again support of the drivers themselves.
-// 	 *
-// 	 * In both scenarios it uses in the existing device. here it looks for
-// 	 * device that match to rte device, if it exists, the request classes
-// 	 * were probed with this device.
-// 	 */
-// 	cdev = to_mlx5_device(eal_dev);
-// 	if (!cdev) {
-// 		/* It isn't probing again, creates a new device. */
-// 		cdev = mlx5_common_dev_create(eal_dev, classes, mkvlist_p);
-// 		if (!cdev) {
-// 			ret = -ENOMEM;
-// 			goto class_err;
-// 		}
-// 		new_device = true;
-// 	} else {
-// 		/* It is probing again, validate common devargs match. */
-// 		ret = mlx5_common_probe_again_args_validate(cdev, mkvlist_p);
-// 		if (ret) {
-// 			DRV_LOG(ERR,
-// 				"Probe again parameters aren't compatible : %s",
-// 				strerror(rte_errno));
-// 			goto class_err;
-// 		}
-// 	}
-// 	/*
-// 	 * Validate combination here.
-// 	 * For new device, the classes_loaded field is 0 and it check only
-// 	 * the classes given as user device arguments.
-// 	 */
-// 	ret = is_valid_class_combination(classes | cdev->classes_loaded);
-// 	if (ret != 0) {
-// 		DRV_LOG(ERR, "Unsupported mlx5 classes combination.");
-// 		goto class_err;
-// 	}
-// 	ret = drivers_probe(cdev, classes, mkvlist_p);
-// 	if (ret)
-// 		goto class_err;
-// 	/*
-// 	 * Validate that all devargs have been used, unused key -> unknown Key.
-// 	 * When probe again validate is failed, the added drivers aren't removed
-// 	 * here but when device is released.
-// 	 */
-// 	ret = mlx5_kvargs_validate(mkvlist_p);
-// 	if (ret)
-// 		goto class_err;
-// 	mlx5_kvargs_release(mkvlist_p);
-// 	return 0;
-// class_err:
-// 	if (new_device) {
-// 		/*
-// 		 * For new device, classes_loaded is always 0 before
-// 		 * drivers_probe function.
-// 		 */
-// 		if (cdev->classes_loaded)
-// 			drivers_remove(cdev, cdev->classes_loaded);
-// 		mlx5_common_dev_release(cdev);
-// 	}
-// 	mlx5_kvargs_release(mkvlist_p);
-// 	return ret;
+	DRV_LOG(INFO, "probe device \"%s\".", eal_dev->name);
+	if (eal_dev->devargs != NULL && eal_dev->devargs->args != NULL)
+		mkvlist_p = &mkvlist;
+	ret = mlx5_kvargs_prepare(mkvlist_p, eal_dev->devargs);
+	if (ret < 0) {
+		DRV_LOG(ERR, "Unsupported device arguments: %s",
+			eal_dev->devargs->args);
+		return ret;
+	}
+	ret = parse_class_options(eal_dev->devargs, mkvlist_p);
+	if (ret < 0) {
+		DRV_LOG(ERR, "Unsupported mlx5 class type: %s",
+			eal_dev->devargs->args);
+		goto class_err;
+	}
+	classes = ret;
+	if (classes == 0)
+		/* Default to net class. */
+		classes = MLX5_CLASS_ETH;
+	/*
+	 * MLX5 common driver supports probing again in two scenarios:
+	 * - Add new driver under existing common device (regardless of the
+	 *   driver's own support in probing again).
+	 * - Transfer the probing again support of the drivers themselves.
+	 *
+	 * In both scenarios it uses in the existing device. here it looks for
+	 * device that match to rte device, if it exists, the request classes
+	 * were probed with this device.
+	 */
+	cdev = to_mlx5_device(eal_dev);
+	if (!cdev) {
+		/* It isn't probing again, creates a new device. */
+		cdev = mlx5_common_dev_create(eal_dev, classes, mkvlist_p);
+		if (!cdev) {
+			ret = -ENOMEM;
+			goto class_err;
+		}
+		new_device = true;
+	} else {
+		/* It is probing again, validate common devargs match. */
+		ret = mlx5_common_probe_again_args_validate(cdev, mkvlist_p);
+		if (ret) {
+			DRV_LOG(ERR,
+				"Probe again parameters aren't compatible : %s",
+				strerror(rte_errno));
+			goto class_err;
+		}
+	}
+	/*
+	 * Validate combination here.
+	 * For new device, the classes_loaded field is 0 and it check only
+	 * the classes given as user device arguments.
+	 */
+	ret = is_valid_class_combination(classes | cdev->classes_loaded);
+	if (ret != 0) {
+		DRV_LOG(ERR, "Unsupported mlx5 classes combination.");
+		goto class_err;
+	}
+	ret = drivers_probe(cdev, classes, mkvlist_p);
+	if (ret)
+		goto class_err;
+	/*
+	 * Validate that all devargs have been used, unused key -> unknown Key.
+	 * When probe again validate is failed, the added drivers aren't removed
+	 * here but when device is released.
+	 */
+	ret = mlx5_kvargs_validate(mkvlist_p);
+	if (ret)
+		goto class_err;
+	mlx5_kvargs_release(mkvlist_p);
 	return 0;
+class_err:
+	if (new_device) {
+		/*
+		 * For new device, classes_loaded is always 0 before
+		 * drivers_probe function.
+		 */
+		if (cdev->classes_loaded)
+			drivers_remove(cdev, cdev->classes_loaded);
+		mlx5_common_dev_release(cdev);
+	}
+	mlx5_kvargs_release(mkvlist_p);
+	return ret;
 }
 
 int

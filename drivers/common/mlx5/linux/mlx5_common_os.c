@@ -26,6 +26,8 @@
 #include "mlx5_common_os.h"
 #include "mlx5_glue.h"
 
+struct ibv_pd *tmp_pd;
+
 #ifdef MLX5_GLUE
 const struct mlx5_glue *mlx5_glue;
 #endif
@@ -515,6 +517,16 @@ mlx5_os_pd_import(struct mlx5_common_device *cdev)
  * @return
  *   0 on success, a negative errno value otherwise and rte_errno is set.
  */
+
+
+int
+mlx5_set_tmp_pd(struct ibv_pd *new_pd){
+	printf("inside set tmp pd : %p\n", new_pd);
+	tmp_pd = new_pd;
+	return 0;
+}
+
+
 int
 mlx5_os_pd_prepare(struct mlx5_common_device *cdev)
 {
@@ -523,7 +535,7 @@ mlx5_os_pd_prepare(struct mlx5_common_device *cdev)
 	struct mlx5dv_pd pd_info;
 #endif
 	int ret;
-
+	cdev->pd = tmp_pd;
 	if (cdev->config.pd_handle == MLX5_ARG_UNSET)
 		ret = mlx5_os_pd_create(cdev);
 	else
@@ -532,8 +544,52 @@ mlx5_os_pd_prepare(struct mlx5_common_device *cdev)
 		rte_errno = -ret;
 		return ret;
 	}
+	// if(strcmp(((struct ibv_pd *)cdev->pd)->context->device->name,"mlx5_0") == 0){
+	// 	printf("DEVICE FOUND\n");
+	// 	cdev->pd = tmp_pd;
+
+	// }
+	printf("before set tmp2 : %p\n",cdev->pd);
+    printf("device2 : %s\n", ((struct ibv_pd *)cdev->pd)->context->device->name);
+    printf("device2: %s\n", ((struct ibv_pd *)cdev->pd)->context->device->dev_name);
+	
 	if (cdev->config.devx == 0)
 		return 0;
+#ifdef HAVE_IBV_FLOW_DV_SUPPORT
+	obj.pd.in = cdev->pd;
+	obj.pd.out = &pd_info;
+	ret = mlx5_glue->dv_init_obj(&obj, MLX5DV_OBJ_PD);
+	if (ret != 0) {
+		DRV_LOG(ERR, "Fail to get PD object info.");
+		rte_errno = errno;
+		claim_zero(mlx5_os_pd_release(cdev));
+		cdev->pd = NULL;
+		return -rte_errno;
+	}
+	cdev->pdn = pd_info.pdn;
+	printf("#******************before cdev->pdn : %d************\n",cdev->pdn);
+	return 0;
+#else
+	DRV_LOG(ERR, "Cannot get pdn - no DV support.");
+	rte_errno = ENOTSUP;
+	return -rte_errno;
+#endif /* HAVE_IBV_FLOW_DV_SUPPORT */
+}
+
+int
+mlx5_pd_change(struct mlx5_common_device *cdev, struct ibv_pd *pd)
+{
+#ifdef HAVE_IBV_FLOW_DV_SUPPORT
+	struct mlx5dv_obj obj;
+	struct mlx5dv_pd pd_info;
+#endif
+	int ret;
+	printf("inside pd change \n");
+	cdev->pd = pd;
+	if (cdev->config.devx == 0){
+		printf("===inside if===\n");
+		return 0;
+	}
 #ifdef HAVE_IBV_FLOW_DV_SUPPORT
 	obj.pd.in = cdev->pd;
 	obj.pd.out = &pd_info;

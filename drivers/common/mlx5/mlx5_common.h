@@ -595,4 +595,8 @@ __rte_internal
 void
 mlx5_os_wrapped_mkey_destroy(struct mlx5_pmd_wrapped_mr *pmd_mr);
 
+__rte_internal
+struct mlx5_common_device *
+to_mlx5_device(const struct rte_device *rte_dev);
+
 #endif /* RTE_PMD_MLX5_COMMON_H_ */

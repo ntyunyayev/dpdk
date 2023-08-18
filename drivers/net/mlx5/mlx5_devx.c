@@ -1217,6 +1217,7 @@ mlx5_get_txq_tis_num(struct rte_eth_dev *dev, uint16_t queue_idx)
 static int
 mlx5_txq_obj_hairpin_new(struct rte_eth_dev *dev, uint16_t idx)
 {
+	printf("=======inside hairpin===========\n");
 	struct mlx5_priv *priv = dev->data->dev_private;
 	struct mlx5_hca_attr *hca_attr = &priv->sh->cdev->config.hca_attr;
 	struct mlx5_txq_data *txq_data = (*priv->txqs)[idx];
@@ -1386,6 +1387,7 @@ static int
 mlx5_txq_create_devx_sq_resources(struct rte_eth_dev *dev, uint16_t idx,
 				  uint16_t log_desc_n)
 {
+	printf("inside mlx5_txq_create_devx_sq_resources\n");
 	struct mlx5_priv *priv = dev->data->dev_private;
 	struct mlx5_common_device *cdev = priv->sh->cdev;
 	struct mlx5_uar *uar = &priv->sh->tx_uar;
