@@ -60,6 +60,7 @@ rxq_handle_pending_error(struct mlx5_rxq_data *rxq, struct rte_mbuf **pkts,
 		struct rte_mbuf *pkt = pkts[i];
 
 		if (pkt->packet_type == RTE_PTYPE_ALL_MASK || rxq->err_state) {
+			printf("inside error\n");
 #ifdef MLX5_PMD_SOFT_COUNTERS
 			err_bytes += PKT_LEN(pkt);
 #endif
@@ -95,7 +96,7 @@ mlx5_rx_replenish_bulk_mbuf(struct mlx5_rxq_data *rxq)
 	volatile struct mlx5_wqe_data_seg *wq =
 		&((volatile struct mlx5_wqe_data_seg *)rxq->wqes)[elts_idx];
 	unsigned int i;
-
+	//printf("!#inside replenish\n");
 	if (n >= rxq->rq_repl_thresh) {
 		MLX5_ASSERT(n >= MLX5_VPMD_RXQ_RPLNSH_THRESH(q_n));
 		MLX5_ASSERT(MLX5_VPMD_RXQ_RPLNSH_THRESH(q_n) >
@@ -107,6 +108,7 @@ mlx5_rx_replenish_bulk_mbuf(struct mlx5_rxq_data *rxq)
 			return;
 		}
 		if (unlikely(mlx5_mr_btree_len(&rxq->mr_ctrl.cache_bh) > 1)) {
+			printf("!#inside unlikely\n");
 			for (i = 0; i < n; ++i) {
 				/*
 				 * In order to support the mbufs with external attached
@@ -121,6 +123,7 @@ mlx5_rx_replenish_bulk_mbuf(struct mlx5_rxq_data *rxq)
 				wq[i].lkey = mlx5_rx_mb2mr(rxq, elts[i]);
 			}
 		} else {
+			printf("inside else\n");
 			for (i = 0; i < n; ++i) {
 				void *buf_addr = elts[i]->buf_addr;
 

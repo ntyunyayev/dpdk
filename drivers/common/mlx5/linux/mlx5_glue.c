@@ -272,6 +272,7 @@ static struct ibv_mr *
 mlx5_glue_reg_mr_iova(struct ibv_pd *pd, void *addr, size_t length,
 		      uint64_t iova, int access)
 {
+	printf("!#======================= iova reg mr\n");
 #ifdef HAVE_MLX5_IBV_REG_MR_IOVA
 		return ibv_reg_mr_iova(pd, addr, length, iova, access);
 #else
