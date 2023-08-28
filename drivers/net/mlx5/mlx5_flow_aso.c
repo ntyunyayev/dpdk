@@ -52,7 +52,7 @@ mlx5_aso_reg_mr(struct mlx5_common_device *cdev, size_t length,
 		struct mlx5_pmd_mr *mr)
 {
 	int ret;
-
+	printf("inside aso reg mr\n");
 	mr->addr = mlx5_malloc(MLX5_MEM_RTE | MLX5_MEM_ZERO, length, 4096,
 			       SOCKET_ID_ANY);
 	if (!mr->addr) {

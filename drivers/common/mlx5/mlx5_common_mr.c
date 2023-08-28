@@ -1587,7 +1587,7 @@ mlx5_mempool_reg_create(struct rte_mempool *mp, unsigned int mrs_n,
 			bool is_extmem)
 {
 	struct mlx5_mempool_reg *mpr = NULL;
-
+	printf("$$$$$$$INSIDE mlx5_mempool_reg_create$$$$$$$\n");
 	mpr = mlx5_malloc(MLX5_MEM_RTE | MLX5_MEM_ZERO,
 			  sizeof(struct mlx5_mempool_reg),
 			  RTE_CACHE_LINE_SIZE, SOCKET_ID_ANY);
@@ -1676,6 +1676,7 @@ mlx5_mr_mempool_register_primary(struct mlx5_mr_share_cache *share_cache,
 				 void *pd, struct rte_mempool *mp,
 				 bool is_extmem)
 {
+	printf("$$$$$$$$$$REGISTERING MEMPOOL$$$$$$$$$$$$\n");
 	struct mlx5_range *ranges = NULL;
 	struct mlx5_mempool_reg *mpr, *old_mpr, *new_mpr;
 	unsigned int i, ranges_n;
@@ -1735,7 +1736,8 @@ mlx5_mr_mempool_register_primary(struct mlx5_mr_share_cache *share_cache,
 		struct mlx5_mempool_mr *mr = &new_mpr->mrs[i];
 		const struct mlx5_range *range = &ranges[i];
 		size_t len = range->end - range->start;
-
+		printf("$$$$INSIDE RANGE$$$$$$$$$\n");
+		printf("cmd_fd : %d\n ",((struct ibv_pd *)pd)->context->cmd_fd);
 		if (share_cache->reg_mr_cb(pd, (void *)range->start, len,
 		    &mr->pmd_mr) < 0) {
 			DRV_LOG(ERR,
@@ -1749,6 +1751,7 @@ mlx5_mr_mempool_register_primary(struct mlx5_mr_share_cache *share_cache,
 			"[0x%" PRIxPTR ", 0x%" PRIxPTR "] (%zu bytes) for mempool %s",
 			mr->pmd_mr.lkey, pd, range->start, range->end, len,
 			mp->name);
+		
 	}
 	if (i != ranges_n) {
 		mlx5_mempool_reg_destroy(share_cache, new_mpr, true);
@@ -1984,6 +1987,7 @@ int
 mlx5_mr_mempool_populate_cache(struct mlx5_mr_ctrl *mr_ctrl,
 			       struct rte_mempool *mp)
 {
+	printf("INSIDE POPULATE\n");
 	struct mlx5_mr_share_cache *share_cache =
 		container_of(mr_ctrl->dev_gen_ptr, struct mlx5_mr_share_cache,
 			     dev_gen);
@@ -2023,6 +2027,8 @@ mlx5_mr_mempool_populate_cache(struct mlx5_mr_ctrl *mr_ctrl,
 			rte_errno = EINVAL;
 			return -1;
 		}
+		printf("mr->pmd_mr.lkey : %u\n",mr->pmd_mr.lkey);
+		printf("mr->pmd_mr.lkey : %u\n",rte_cpu_to_be_32(mr->pmd_mr.lkey));
 	}
 	return 0;
 }

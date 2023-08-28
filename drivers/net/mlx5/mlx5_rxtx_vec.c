@@ -122,6 +122,7 @@ mlx5_rx_replenish_bulk_mbuf(struct mlx5_rxq_data *rxq)
 			}
 		} else {
 			for (i = 0; i < n; ++i) {
+				printf("inside forloop \n");
 				void *buf_addr = elts[i]->buf_addr;
 
 				wq[i].addr = rte_cpu_to_be_64((uintptr_t)buf_addr +

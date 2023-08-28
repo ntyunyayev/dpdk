@@ -220,6 +220,7 @@ mlx5_rxq_ibv_cq_create(struct mlx5_rxq_priv *rxq)
 static struct ibv_wq *
 mlx5_rxq_ibv_wq_create(struct mlx5_rxq_priv *rxq)
 {
+	printf("$$$$$$$$$inside CREATE$$$$$$$$$$$$$$$\n");
 	struct mlx5_priv *priv = rxq->priv;
 	struct mlx5_rxq_ctrl *rxq_ctrl = rxq->ctrl;
 	struct mlx5_rxq_data *rxq_data = &rxq_ctrl->rxq;
@@ -231,7 +232,7 @@ mlx5_rxq_ibv_wq_create(struct mlx5_rxq_priv *rxq)
 		struct mlx5dv_wq_init_attr mlx5;
 #endif
 	} wq_attr;
-
+	
 	wq_attr.ibv = (struct ibv_wq_init_attr){
 		.wq_context = NULL, /* Could be useful in the future. */
 		.wq_type = IBV_WQT_RQ,

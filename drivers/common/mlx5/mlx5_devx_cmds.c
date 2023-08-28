@@ -342,6 +342,7 @@ struct mlx5_devx_obj *
 mlx5_devx_cmd_mkey_create(void *ctx,
 			  struct mlx5_devx_mkey_attr *attr)
 {
+	printf("$$$$$$$$$$$$$$$$$$$$\n");
 	struct mlx5_klm *klm_array = attr->klm_array;
 	int klm_num = attr->klm_num;
 	int in_size_dw = MLX5_ST_SZ_DW(create_mkey_in) +

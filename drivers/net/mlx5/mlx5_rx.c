@@ -384,7 +384,10 @@ mlx5_rxq_initialize(struct mlx5_rxq_data *rxq)
 					rxq->wqes)[i];
 			addr = rte_pktmbuf_mtod(buf, uintptr_t);
 			byte_count = DATA_LEN(buf);
-			lkey = buf->dynfield1[0];
+			//printf("byte_count : %u\n", byte_count);
+			
+			//lkey = mlx5_rx_mb2mr(rxq, buf);
+			lkey = rte_cpu_to_be_32(buf->dynfield1[0]);
 			//printf("lkey : %d\n",lkey);
 		}
 		/* scat->addr must be able to store a pointer. */
@@ -469,6 +472,8 @@ mlx5_rx_err_handle(struct mlx5_rxq_data *rxq, uint8_t vec)
 			MKSTR(name, "dpdk_mlx5_port_%u_rxq_%u_%u",
 			      rxq->port_id, rxq->idx, (uint32_t)rte_rdtsc());
 			mlx5_dump_debug_information(name, NULL, err_str, 0);
+			printf("%s\n", err_str);
+
 			mlx5_dump_debug_information(name, "MLX5 Error CQ:",
 						    (const void *)((uintptr_t)
 								    rxq->cqes),
@@ -483,6 +488,7 @@ mlx5_rx_err_handle(struct mlx5_rxq_data *rxq, uint8_t vec)
 		/* Fall-through */
 	case MLX5_RXQ_ERR_STATE_NEED_READY:
 		ret = check_cqe(u.cqe, cqe_n, rxq->cq_ci);
+		//printf("inside MLX5_RXQ_ERR_STATE_NEED_READY\n");
 		if (ret == MLX5_CQE_STATUS_HW_OWN) {
 			rte_io_wmb();
 			*rxq->cq_db = rte_cpu_to_be_32(rxq->cq_ci);
