@@ -206,7 +206,6 @@ int
 mlx5_devx_sq_create(void *ctx, struct mlx5_devx_sq *sq_obj, uint16_t log_wqbb_n,
 		    struct mlx5_devx_create_sq_attr *attr, int socket)
 {
-	printf("inside sq_create\n");
 	struct mlx5_devx_obj *sq = NULL;
 	struct mlx5dv_devx_umem *umem_obj = NULL;
 	void *umem_buf = NULL;
@@ -263,7 +262,6 @@ mlx5_devx_sq_create(void *ctx, struct mlx5_devx_sq *sq_obj, uint16_t log_wqbb_n,
 	sq_obj->db_rec = RTE_PTR_ADD(sq_obj->umem_buf, umem_dbrec);
 	return 0;
 error:
-	printf("inside error handling\n");
 	ret = rte_errno;
 	if (umem_obj)
 		claim_zero(mlx5_os_umem_dereg(umem_obj));

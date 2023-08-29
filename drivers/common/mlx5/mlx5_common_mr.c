@@ -1587,7 +1587,6 @@ mlx5_mempool_reg_create(struct rte_mempool *mp, unsigned int mrs_n,
 			bool is_extmem)
 {
 	struct mlx5_mempool_reg *mpr = NULL;
-	printf("$$$$$$$INSIDE mlx5_mempool_reg_create$$$$$$$\n");
 	mpr = mlx5_malloc(MLX5_MEM_RTE | MLX5_MEM_ZERO,
 			  sizeof(struct mlx5_mempool_reg),
 			  RTE_CACHE_LINE_SIZE, SOCKET_ID_ANY);
