@@ -21,6 +21,7 @@
 #include "mlx5_autoconf.h"
 #include "mlx5_glue.h"
 #include "mlx5_malloc.h"
+#include "mlx5_common.h"
 
 /**
  * Get device name. Given an ibv_device pointer - return a

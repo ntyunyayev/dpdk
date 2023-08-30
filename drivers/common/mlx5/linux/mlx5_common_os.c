@@ -511,7 +511,9 @@ mlx5_os_pd_import(struct mlx5_common_device *cdev)
 /**
  *Set protection domain to be used inside mlx5_os_pd_prepare
 */
-int mlx5_set_tmp_pd(struct ibv_pd *new_pd) {
+int 
+mlx5_set_tmp_pd(struct ibv_pd *new_pd) {
+	printf("inside set tmp pd\n");
     tmp_pd = new_pd;
     return 0;
 }
