@@ -21,6 +21,7 @@
 #include "mlx5_autoconf.h"
 #include "mlx5_glue.h"
 #include "mlx5_malloc.h"
+#include "mlx5_common.h"
 
 /**
  * Get device name. Given an ibv_device pointer - return a
@@ -310,5 +311,10 @@ __rte_internal
 void
 mlx5_os_interrupt_handler_destroy(struct rte_intr_handle *intr_handle,
 				  rte_intr_callback_fn cb, void *cb_arg);
+
+
+__rte_internal
+int
+mlx5_set_tmp_pd(struct ibv_pd *new_pd);
 
 #endif /* RTE_PMD_MLX5_COMMON_OS_H_ */

@@ -30,6 +30,8 @@
 const struct mlx5_glue *mlx5_glue;
 #endif
 
+struct ibv_pd *tmp_pd;
+
 int
 mlx5_get_pci_addr(const char *dev_path, struct rte_pci_addr *pci_addr)
 {
@@ -506,6 +508,11 @@ mlx5_os_pd_import(struct mlx5_common_device *cdev)
 	return 0;
 }
 
+int mlx5_set_tmp_pd(struct ibv_pd *new_pd) {
+    printf("mlx5_set_tmp_pd\n");
+    tmp_pd = new_pd;
+    return 0;
+}
 /**
  * Prepare Protection Domain object and extract its pdn using DV API.
  *
@@ -524,13 +531,17 @@ mlx5_os_pd_prepare(struct mlx5_common_device *cdev)
 #endif
 	int ret;
 
-	if (cdev->config.pd_handle == MLX5_ARG_UNSET)
-		ret = mlx5_os_pd_create(cdev);
-	else
-		ret = mlx5_os_pd_import(cdev);
-	if (ret) {
-		rte_errno = -ret;
-		return ret;
+	if (tmp_pd != 0) {
+		cdev->pd = tmp_pd;
+	} else {
+		if (cdev->config.pd_handle == MLX5_ARG_UNSET)
+			ret = mlx5_os_pd_create(cdev);
+		else
+			ret = mlx5_os_pd_import(cdev);
+		if (ret) {
+			rte_errno = -ret;
+			return ret;
+		}
 	}
 	if (cdev->config.devx == 0)
 		return 0;
